@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>MG 私桩</title>
+<style>
+:root{font-family:MiSans,system-ui,"Microsoft YaHei",sans-serif;color:#191919;background:#f4f5f7;color-scheme:light;--surface:#fff;--field:#f3f4f6;--text:#191919;--sub:#81858d;--blue:#3482ff;--line:#f0f1f3}*{box-sizing:border-box}body{margin:0}main{max-width:980px;margin:auto;padding:34px 22px 42px}header{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:22px}h1{font-size:34px;letter-spacing:-1px;margin:4px 0 8px;font-weight:750}h2{font-size:18px;margin:0 0 18px;font-weight:650}.eyebrow{font-size:12px;color:var(--sub);letter-spacing:1px}p{font-size:13px;color:var(--sub);line-height:1.7}.badge{padding:9px 14px;border-radius:20px;background:#e7efff;color:#3482ff;font-size:12px;white-space:nowrap}.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px}.card{background:var(--surface);border-radius:26px;padding:25px;border:0}.wide{grid-column:1/-1}label{display:block;font-size:13px;color:var(--sub);margin:14px 0 8px}input:not([type=checkbox]),select{width:100%;background:var(--field);border:1px solid transparent;border-radius:14px;padding:14px;color:var(--text);font:inherit;outline:none}input:focus{border-color:var(--blue)}button{border:0;border-radius:16px;padding:14px 16px;background:var(--field);color:var(--text);font:inherit;font-size:14px;font-weight:600;cursor:pointer;transition:transform .12s,opacity .12s}button:active{transform:scale(.97)}button:disabled{opacity:.35;cursor:default}.primary{background:var(--blue);color:#fff}.danger{background:#fff0ee;color:#e85b54}.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:14px 0}.row>*{flex:1;min-width:100px}.check{display:flex;align-items:center;justify-content:space-between;gap:15px;line-height:1.5;padding:10px 0;border-bottom:1px solid var(--line);color:var(--text)}.check span{flex:1;order:-1;font-size:13px}.check input{appearance:none;-webkit-appearance:none;width:42px;height:25px;background:#dce0e5;border-radius:20px;flex:none;position:relative;cursor:pointer;transition:background .2s}.check input:before{content:'';width:19px;height:19px;background:white;border-radius:50%;position:absolute;top:3px;left:3px;box-shadow:0 1px 3px #0002;transition:transform .2s}.check input:checked{background:var(--blue)}.check input:checked:before{transform:translateX(17px)}.check input:disabled{opacity:.4}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.metric{padding:14px 10px;background:var(--field);border-radius:18px}.metric small{display:block;color:var(--sub);font-size:11px}.metric strong{display:block;font-size:18px;margin-top:10px;font-weight:650}.metric:first-child strong{color:var(--blue)}.note{background:#eaf1ff;color:#60728d;padding:13px 17px;border-radius:18px;font-size:12px}.log{height:230px;overflow:auto;white-space:pre-wrap;word-break:break-all;font:11px/1.8 Consolas,monospace;background:var(--field);color:var(--sub);padding:15px;border-radius:16px}.muted{color:var(--sub);font-size:12px}.hidden{display:none!important}#message{color:var(--blue);font-size:13px;line-height:1.7;min-height:24px;margin-top:14px}details{margin-top:16px;color:var(--sub)}summary{cursor:pointer;font-size:13px}.status-card{grid-column:1/-1}.status-card .metric:first-child strong{font-size:28px}.status-card #deviceName{color:var(--text)}.immediate-button{font-size:16px;padding:17px!important}.sheet-backdrop{position:fixed;inset:0;background:#0006;z-index:100;display:flex;align-items:flex-end;justify-content:center;padding:16px;backdrop-filter:blur(6px)}.sheet{background:var(--surface);border-radius:30px;width:100%;max-width:480px;padding:27px}.sheet h2{font-size:23px}.sheet p{font-size:14px}.sheet .row{margin-bottom:0}footer{text-align:center;margin-top:24px}
+@media(max-width:720px){main{padding:28px 16px 30px}.grid{grid-template-columns:1fr;gap:14px}.card{padding:22px;border-radius:24px}h1{font-size:32px}header{align-items:flex-start}.metrics{gap:8px}.metric{padding:14px 9px}.metric strong{font-size:15px}.status-card .metric:first-child strong{font-size:21px}}
+@media(prefers-color-scheme:dark){:root{color:#eee;background:#101114;color-scheme:dark;--surface:#1c1d21;--field:#292a30;--text:#eee;--sub:#92959e;--line:#2d2e35}.badge{background:#202e49}.note{background:#1e2a3f;color:#a9bbd7}.danger{background:#3d2526;color:#ff8a83}}
+main{padding-top:calc(34px + env(safe-area-inset-top));padding-bottom:calc(42px + env(safe-area-inset-bottom))}button,select,input{min-height:44px}#log{min-height:120px}
+</style></head><body><main>
+
+<header><div><div class="eyebrow">MG 私桩 · 网页版</div><h1>我的充电桩</h1><p>蓝牙连接 · 随时掌握充电状态</p></div><span class="badge" id="connection">未连接</span></header>
+<section class="card wide" id="helpCard">
+<h2>怎么在手机上用</h2>
+<p><b>环境自检：</b><span id="envCheck">检测中…</span></p>
+<details><summary>iPhone 该用哪个浏览器？</summary>
+<p><b>iPhone / iPad：</b>用 <b>Bluefy – Web BLE Browser</b>（App Store 免费）打开本页。Safari 至今不支持 Web Bluetooth，直接用 Safari 打不开蓝牙。</p>
+<p><b>Android：</b>Chrome 打开。<b>电脑：</b>Chrome / Edge 打开。</p>
+<p><b>必须满足：</b>页面地址是 <code>https://…</code> 或 <code>localhost</code>（安全上下文）。用 <code>http://</code> 或直接双击本地文件打开时，浏览器不会提供蓝牙能力。</p>
+</details>
+<details><summary>连接不上时按顺序排查</summary>
+<ol>
+<li>确认已授予「蓝牙」权限；Android 12+ 另需「附近的设备」，Android 11 及以下需打开系统定位开关。</li>
+<li>离充电桩近一些（2–3 米），桩要处于可被连接状态，且没有被别的手机占用。</li>
+<li>看下方「通信日志」：若出现 <code>丢弃非 AA/68 帧头数据</code>，说明桩返回的帧头与预期不符，到「诊断与兼容」里切换帧头模式。</li>
+<li>若日志里一条 RX 都没有，通常是通知特征没订阅上（桩未暴露 FFF4/FFF5）。</li>
+</ol>
+</details>
+</section>
+<section class="card wide" id="diagCard">
+<h2>诊断与兼容</h2>
+<label class="check"><input type="checkbox" id="rx68" checked><span>接收帧头兼容 0x68 与 0xAA（诊断，默认开；原 APK 只认 0xAA）</span></label>
+<div class="row"><button id="selftest">协议自检</button><button id="clearlog2">清空日志</button></div>
+<p class="muted" id="selftestOut">点「协议自检」会用内置黄金向量校验页面里的协议实现，结果写入日志。</p>
+</section>
+
+<p class="note">本地蓝牙连接，不登录 MG 账号、不上传 VIN。</p>
+<div class="grid"><section class="card status-card"><h2>充电状态</h2><div class="metrics"><div class="metric"><small>充电状态</small><strong id="status">尚未读取</strong></div><div class="metric"><small>车辆认证</small><strong id="auth">未请求</strong></div><div class="metric"><small>灯光 / 音量</small><strong id="extras">—</strong></div></div><p id="deviceName">未选择设备</p><p id="schedule">预约：尚未读取</p><p id="lastRead" class="muted">状态仅依据实际响应显示。</p><div class="row"><button id="read" data-connected disabled>读取系统信息</button><button id="sync" data-connected disabled>同步时间</button></div><label class="check"><input type="checkbox" id="poll"><span>每 5 秒读取一次状态</span></label></section><section class="card"><h2>连接充电桩</h2>
+<label for="pile">设备编号 / 桩号</label><input id="pile" placeholder="输入完整编号，例如 AY12ARM269A1B2C" autocomplete="off" spellcheck="false">
+<label for="vin">与充电桩绑定的车辆 VIN</label><input id="vin" placeholder="17 位 VIN，仅保留在当前页面内存中" maxlength="17" autocomplete="off" spellcheck="false">
+<label class="check"><input type="checkbox" id="consent"><span>这是我拥有或获准使用的桩；桩请求 VIN 校验时，允许发送上面填写的车辆 VIN。</span></label>
+<label class="check"><input type="checkbox" id="allDevices"><span>搜索全部蓝牙设备（默认只显示 AYXXARM269XXXXX）</span></label>
+<div class="row"><button class="primary" id="directConnect">按编号连接</button><button id="connect">搜索并选择</button><button id="disconnect" disabled>断开</button></div>
+<p class="muted" id="capability"></p><div id="message" role="status" aria-live="polite"></div>
+<details><summary>连接条件与认证说明</summary><p>此 APK 使用手机原生蓝牙，无需浏览器、电脑或网络。服务 FFF0，指令 FFF3，VIN FFF6；监听 FFF4 / FFF5 / FFF9。VIN 校验失败会停止发送控制指令。桩号有填写时，系统信息返回的桩号必须匹配。只拥有 UUID 不代表已经认证。</p></details>
+</section>
+<section class="card"><h2>充电与设备</h2><p>连接后自动读取桩端信息，核对通过即可操作。</p><button id="start" class="primary immediate-button" data-control disabled style="width:100%">开始充电</button><div class="row"><button id="immediate" data-control disabled>未到预约时间，立即充电</button><button id="stop" class="danger" data-control disabled>停止充电</button></div><p class="muted">提前充电会关闭桩端预约，之后不会自动恢复。车辆自身的预约需在车端解除。</p><div class="row"><button id="lightOn" data-control disabled>开启灯光</button><button id="lightOff" data-control disabled>关闭灯光</button></div><label for="volume">提示音音量（0–100）</label><div class="row"><input id="volume" type="number" min="0" max="100" value="30"><button id="setVolume" data-control disabled>设置音量</button></div></section>
+<section class="card"><h2>预约充电</h2><p>时间按照桩本地时钟解释；跨午夜行为需现场确认。</p><div class="row"><div><label for="begin">开始</label><input id="begin" type="time" value="23:00"></div><div><label for="end">结束</label><input id="end" type="time" value="07:00"></div></div><div class="row"><button id="reserve" data-control disabled>设置预约</button><button id="cancelReserve" data-control disabled>关闭预约</button></div><p class="muted">原 App 提示：预约后可能需要重新插枪，到点自动充电。</p></section>
+<section class="card wide"><details><summary>连接日志</summary><div class="row"><h2>通信日志</h2><button id="export">导出日志</button><button id="clear">清空</button></div><div id="log" class="log" role="log" aria-label="通信日志"></div><p class="muted">VIN 发送日志已隐藏内容；设备名称、桩号及响应中可能含标识，分享日志前请检查。</p></details></section></div>
+<footer><p>本地蓝牙连接 · 网页版 1.0 · 协议逆向自 MG Live 2.2.6，非官方工具</p></footer>
+</main><div id="immediateSheet" class="sheet-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="sheetTitle"><div class="sheet"><h2 id="sheetTitle">未到预约时间，立即充电？</h2><p>将关闭充电桩的预约，确认关闭后发送启动指令。原预约不会自动恢复；下次需要重新设置。</p><p>如果车辆本身设置了预约，桩端不能代替车辆解除预约；部分桩也可能需要重新插枪。</p><div class="row"><button id="cancelImmediate">取消</button><button id="confirmImmediate" class="primary">关闭预约并启动</button></div></div></div><script>// Implements the Web Bluetooth subset used by the bundled page with Android GATT.
+(function(){
+ if(!window.AndroidBLE)return; // 网页版：普通浏览器直接使用原生 Web Bluetooth，不覆盖
+ let counter=0,callbacks=new Map(),current=null;
+ const encode=bytes=>btoa(String.fromCharCode(...bytes));
+ const decode=data=>Uint8Array.from(atob(data),c=>c.charCodeAt(0));
+ function call(action,input={}){return new Promise((resolve,reject)=>{const id=++counter;callbacks.set(id,{resolve,reject});AndroidBLE.call(action,id,JSON.stringify(input))})}
+ window.NativeBLE={
+  resolve(id,value){const c=callbacks.get(id);if(c){callbacks.delete(id);c.resolve(value)}},
+  reject(id,text){const c=callbacks.get(id);if(c){callbacks.delete(id);c.reject(Error(text))}},
+  notification(code,data){const c=current?.characteristics.get(code);if(c){const bytes=decode(data);c.value=new DataView(bytes.buffer);c.listener?.({target:c})}},
+  disconnected(){if(current){current.gatt.connected=false;current.disconnectListener?.()}},
+ };
+ const bluetooth={async requestDevice(options={}){
+  const info=await call('scan',{all:!!options.scanAll,direct:!!options.direct,target:options.targetName||''});
+  const d={name:info.name,characteristics:new Map(),addEventListener(name,listener){if(name==='gattserverdisconnected')this.disconnectListener=listener}};
+  d.gatt={connected:false,async connect(){current=d;const found=await call('connect',{address:info.address});this.connected=true;d.characteristics.clear();
+   for(const f of found){const props=f.properties;const c={uuid:f.uuid,properties:{write:!!(props&8),writeWithoutResponse:!!(props&4),notify:!!(props&16),indicate:!!(props&32)},addEventListener(name,listener){if(name==='characteristicvaluechanged')this.listener=listener},async startNotifications(){await call('subscribe',{code:f.code});return this},writeValueWithResponse(bytes){return call('write',{code:f.code,data:encode(bytes),response:true})},writeValueWithoutResponse(bytes){return call('write',{code:f.code,data:encode(bytes),response:false})}};d.characteristics.set(f.code,c);}
+   return {getPrimaryService:async()=>({getCharacteristics:async()=>Array.from(d.characteristics.values())}),disconnect:()=>this.disconnect()};
+  },disconnect(){this.connected=false;call('disconnect').catch(()=>{});}};return d;
+ }};
+ Object.defineProperty(navigator,'bluetooth',{value:bluetooth,configurable:true});
+})();
+</script><script>/* Ported from MG Live 2.2.6 com.saicmotor.vehicle.charge.b.a and charge.f.e. */
+(function(root){
+ 'use strict';
+ const RX_HEADERS=[0xAA,0x68]; /* 诊断：原版硬要求 0xAA；此处默认同时接受 0x68，可在页面开关调整 */
+ const codes={0xA0:'灯光',0xB0:'校时',0xB1:'系统信息',0xB2:'音量',0xB3:'预约',0xB4:'开始充电',0xB5:'状态推送',0xB6:'停止充电',0xB8:'累计充电'};
+ const hex=a=>Array.from(a,b=>b.toString(16).padStart(2,'0')).join(' ').toUpperCase();
+ function setHeaders(list){RX_HEADERS.length=0;for(const x of list)RX_HEADERS.push(x)}
+ function frame(cmd,payload=[],head=0x68){
+  if(!Number.isInteger(cmd)||cmd<0||cmd>255||payload.length>1024)throw Error('非法帧参数');
+  const a=new Uint8Array(8+payload.length); a[0]=head;a[1]=cmd;a[4]=payload.length&255;a[5]=payload.length>>8;a.set(payload,8);
+  a[7]=a.reduce((x,y)=>x^y,0);return a;
+ }
+ const commands={
+  info:()=>frame(0xB1),
+  sync:(seconds=Math.floor(Date.now()/1000))=>{const b=new Uint8Array(4);new DataView(b.buffer).setUint32(0,seconds,true);return frame(0xB0,b)},
+  start:()=>frame(0xB4,[1,0]),stop:()=>frame(0xB6,[0]),
+  light:on=>frame(0xA0,[on?1:0,1,0,0,0,0,0]),
+  volume:n=>{if(!Number.isInteger(n)||n<0||n>100)throw Error('音量应为 0–100');return frame(0xB2,[n])},
+  reserve:(on,start='00:00',end='00:00')=>{
+   const time=s=>{if(!/^([01]\d|2[0-3]):[0-5]\d$/.test(s))throw Error('时间格式应为 HH:mm');return s.split(':').map(Number)};
+   return frame(0xB3,on?[1,...time(start),...time(end)]:[0,0,0,0,0]);
+  }
+ };
+ class Parser{
+  constructor(){this.buffer=new Uint8Array()}
+  push(chunk){
+   let b=new Uint8Array(this.buffer.length+chunk.length);b.set(this.buffer);b.set(chunk,this.buffer.length);
+   const frames=[],errors=[];
+   while(b.length){
+    if(!RX_HEADERS.includes(b[0])){let next=-1;for(const h of RX_HEADERS){const i=b.indexOf(h);if(i>=0&&(next<0||i<next))next=i}errors.push('丢弃非 '+RX_HEADERS.map(x=>x.toString(16).toUpperCase().padStart(2,'0')).join('/')+' 帧头数据');b=next<0?new Uint8Array():b.slice(next);continue}
+    if(b.length<8)break;
+    const len=b[4]+256*b[5];if(len>1024){errors.push('异常帧长度');b=b.slice(1);continue}
+    if(b.length<8+len)break;
+    const a=b.slice(0,8+len);b=b.slice(8+len);
+    if(a.reduce((x,y)=>x^y,0)!==0){errors.push('XOR 校验失败，已丢弃');continue}
+    frames.push({cmd:a[1],payload:a.slice(8),bytes:a});
+   }
+   this.buffer=b;return {frames,errors};
+  }
+ }
+ function sysInfo(p){
+  if(p.length<59)throw Error('系统信息响应不足 59 字节');
+  return {pile:new TextDecoder().decode(p.slice(0,20)).replace(/\0/g,'').trim(),light:p[41]===1,mode:p[46],schedule:Array.from(p.slice(47,51)),volume:p[51],status:p[58]};
+ }
+ const statusText=n=>({0:'未充电',2:'未充电',6:'充电中',8:'充电完成',9:'离线'}[n]||`未知状态 0x${n.toString(16)}`);
+ function vinBytes(s){s=s.trim().toUpperCase();if(!/^[A-HJ-NPR-Z0-9]{17}$/.test(s))throw Error('请输入自己车辆的 17 位 VIN（不含 I/O/Q）');return new TextEncoder().encode(s)}
+ const api={frame,commands,Parser,sysInfo,statusText,vinBytes,codes,hex,setHeaders,getHeaders:()=>RX_HEADERS.slice()};
+ root.PileProtocol=api;if(typeof module!=='undefined')module.exports=api;
+})(typeof globalThis!=='undefined'?globalThis:this);
+</script><script>'use strict';
+const P=PileProtocol,$=id=>document.getElementById(id),sleep=ms=>new Promise(r=>setTimeout(r,ms));
+let device=null,chars={},connected=false,busy=false,ready=false,authFailed=false,epoch=0,chain=Promise.resolve(),pending=null,pollTimer=null;
+let parsers={},logs=[],lastWrite=0;
+let lastInfo=null;
+function log(s){const line=`${new Date().toLocaleTimeString()} ${s}`;logs.push(line);if(logs.length>1500)logs.shift();$('log').textContent=logs.join('\n');$('log').scrollTop=$('log').scrollHeight}
+function message(s){$('message').textContent=s}
+function refresh(){
+ $('connection').textContent=connected?'蓝牙已连接':'未连接';
+ $('connect').disabled=connected||busy;$('disconnect').disabled=!connected;
+ $('directConnect').disabled=connected||busy;$('allDevices').disabled=connected||busy;
+ document.querySelectorAll('[data-connected]').forEach(b=>b.disabled=!connected||busy||authFailed);
+ document.querySelectorAll('[data-control]').forEach(b=>b.disabled=!connected||busy||!ready||authFailed);
+ $('vin').disabled=connected;$('pile').disabled=connected;$('consent').disabled=connected;
+}
+function drop(){epoch++;connected=false;chars={};parsers={};ready=false;authFailed=false;busy=false;clearInterval(pollTimer);pollTimer=null;$('poll').checked=false;
+ if(pending){clearTimeout(pending.timer);pending.reject(Error('连接已断开'));pending=null}
+ chain=Promise.resolve();lastWrite=0;lastInfo=null;$('status').textContent='尚未读取';$('auth').textContent='未请求';$('extras').textContent='—';$('schedule').textContent='预约：尚未读取';$('lastRead').textContent='状态仅依据实际响应显示。';$('immediateSheet').classList.add('hidden');refresh();
+}
+function disconnect(){const old=device;device=null;drop();if(old?.gatt?.connected)old.gatt.disconnect();message('连接已断开');log('断开连接')}
+function receive(code,bytes){
+ log(`RX ${code.toUpperCase()} ${P.hex(bytes)}`);
+ if(code==='fff5'){
+  if(bytes[0]===0x0a){$('auth').textContent='桩请求 VIN';ready=false;refresh();
+   if(authFailed){message('认证失败后请核对 VIN 并重新连接');return}
+   if(!$('consent').checked){blockAuth(Error('桩请求 VIN 认证；请断开，填写自己车辆 VIN 并勾选授权后重连'));return}
+   try{const vin=P.vinBytes($('vin').value),current=epoch;$('auth').textContent='VIN 已提交，待验证';write('fff6',vin,true).catch(e=>{if(current===epoch)blockAuth(e)})}catch(e){blockAuth(e)}
+  }else if(bytes[0]===0x55||bytes[0]===0x54){authFailed=true;ready=false;$('auth').textContent=bytes[0]===0x55?'VIN 不匹配':'认证超时';refresh();message('桩端拒绝认证，请核对绑定车辆的 VIN 后重连');if(pending){clearTimeout(pending.timer);pending.reject(Error('桩端认证失败'));pending=null}}
+  return;
+ }
+ const parser=parsers[code]||(parsers[code]=new P.Parser());const result=parser.push(bytes);result.errors.forEach(log);
+ for(const f of result.frames){
+  if(f.cmd===0xb1){try{
+   const info=P.sysInfo(f.payload),expected=$('pile').value.trim();
+   if(expected&&info.pile.toUpperCase()!==expected.toUpperCase()){ready=false;authFailed=true;refresh();throw Error(`桩号不匹配：返回 ${info.pile}，已禁用控制`)}
+   lastInfo=info;ready=!authFailed;$('deviceName').textContent=`已读取桩号：${info.pile}`;$('status').textContent=P.statusText(info.status);$('extras').textContent=`${info.light?'开':'关'} / ${info.volume}`;
+   const t=n=>String(n).padStart(2,'0');$('schedule').textContent=`预约：${info.mode===1?'已开启':'未开启'} ${t(info.schedule[0])}:${t(info.schedule[1])}–${t(info.schedule[2])}:${t(info.schedule[3])}`;
+   $('lastRead').textContent=`桩端响应更新时间：${new Date().toLocaleTimeString()}`;refresh();
+  }catch(e){fail(e);if(pending?.cmd===f.cmd){const req=pending;pending=null;clearTimeout(req.timer);req.reject(e)}continue}}
+  if(pending?.cmd===f.cmd){const req=pending;pending=null;clearTimeout(req.timer);
+   // The original SyncTimeResponseMessage does not define a result byte.
+   // A B0 payload may contain data; interpreting its first byte as an error is invalid.
+   if([0xa0,0xb2,0xb3,0xb4].includes(f.cmd)&&(f.payload.length===0||f.payload[0]!==0))req.reject(Error(`桩端${P.codes[f.cmd]}失败，返回 ${f.payload.length?f.payload[0]:'空响应'}`));else req.resolve(f)
+  }
+ }
+}
+function fail(e){message(e.message||String(e));log(`ERROR ${e.message||e}`)}
+function blockAuth(e){authFailed=true;ready=false;refresh();fail(e);if(pending){const req=pending;pending=null;clearTimeout(req.timer);req.reject(e)}}
+function write(code,bytes,secret=false){
+ const current=epoch;
+ const task=async()=>{
+  if(current!==epoch||!connected)throw Error('连接已失效');if(authFailed)throw Error('桩端认证未通过');
+  await sleep(Math.max(0,120-(Date.now()-lastWrite)));if(current!==epoch||!connected)throw Error('连接已失效');
+  const c=chars[code];if(!c)throw Error(`设备缺少 ${code.toUpperCase()} 特征，无法操作`);
+  log(secret?'TX REQUEST FFF6 <VIN 已隐藏>':`TX REQUEST ${code.toUpperCase()} ${P.hex(bytes)}`);
+  if(c.properties.write)await c.writeValueWithResponse(bytes);else if(c.properties.writeWithoutResponse)await c.writeValueWithoutResponse(bytes);else throw Error(`${code} 不支持写入`);
+  lastWrite=Date.now();log(secret?'TX FFF6 <VIN 已隐藏>':`TX ${code.toUpperCase()} ${P.hex(bytes)}`);
+ };
+ const work=chain.then(task);chain=work.catch(()=>{});return work;
+}
+function request(bytes){
+ if(pending)return Promise.reject(Error('已有指令等待桩端响应'));
+ return new Promise((resolve,reject)=>{
+  const req={cmd:bytes[1],resolve,reject,timer:setTimeout(()=>{if(pending===req)pending=null;reject(Error(`${P.codes[bytes[1]]||'指令'} 30 秒未响应；请读取状态确认，不自动重发控制指令`))},30000)};pending=req;
+  write('fff3',bytes).catch(e=>{if(pending===req)pending=null;clearTimeout(req.timer);reject(e)});
+ });
+}
+async function run(fn){if(busy)return;busy=true;refresh();try{await fn()}catch(e){fail(e)}finally{busy=false;refresh()}}
+async function control(bytes){
+ if(!ready||authFailed)throw Error('请先读取并核对桩端信息');
+ await request(bytes);message(`${P.codes[bytes[1]]}响应已收到，正在重新读取状态`);await request(P.commands.info());message(`${P.codes[bytes[1]]}响应已收到，请以上方最新桩端状态为准`);
+}
+async function immediateCharge(){
+ if(!ready||authFailed)throw Error('请先读取并核对桩端信息');
+ const session=epoch;
+ const ensure=()=>{if(session!==epoch||!connected||authFailed)throw Error('连接或认证已失效，立即充电已停止')};
+ message('正在读取当前桩端预约状态');await request(P.commands.info());ensure();
+ if(lastInfo.status===6){message('桩端已报告充电中');return}
+ if(lastInfo.mode===1){
+  message('正在关闭桩端预约');await request(P.commands.reserve(false));ensure();await request(P.commands.info());ensure();
+  if(lastInfo.mode!==0)throw Error('未确认桩端预约已关闭，未发送启动指令；请读取状态后重试');
+ }else if(lastInfo.mode!==0&&lastInfo.mode!==9){throw Error('桩端预约模式未知，未发送启动指令')}
+ message('正在向充电桩发送立即启动指令');await request(P.commands.start());ensure();
+ for(let i=0;i<5;i++){await sleep(1000);ensure();await request(P.commands.info());ensure();if(lastInfo.status===6){message('桩端已报告充电中；本次关闭的桩端预约不会自动恢复');return}}
+ message('启动响应已收到，但桩尚未报告充电中。请检查车辆预约、充电枪连接；部分桩可能需要重新插枪。桩端预约不会自动恢复。');
+}
+async function connect(direct=false){
+ if(!navigator.bluetooth)throw Error('当前浏览器不支持 Web Bluetooth，请用 Windows / Android Chrome');
+ if($('consent').checked)P.vinBytes($('vin').value);
+ const serial=epoch,name=$('pile').value.trim();
+ if(direct&&!name)throw Error('请先输入完整设备编号');
+ try{
+  const all=$('allDevices').checked;
+  const options=direct?{filters:[{name}],optionalServices:[0xfff0]}:all?{acceptAllDevices:true,optionalServices:[0xfff0]}:{filters:[{namePrefix:'AY'}],optionalServices:[0xfff0]};
+  if(window.AndroidBLE){options.scanAll=all;options.targetName=direct?name:'';options.direct=direct;}
+  try{device=await navigator.bluetooth.requestDevice(options)}catch(err){if(direct||all)throw err;message('按名称前缀过滤失败（'+err.message+'），已切换为全网扫描，请在列表中选择自己的桩');device=await navigator.bluetooth.requestDevice({acceptAllDevices:true,optionalServices:[0xfff0]})}
+  const chosen=device;chosen.addEventListener('gattserverdisconnected',()=>{if(device===chosen){drop();message('设备蓝牙已断开');log('设备蓝牙已断开')}});
+  const server=await chosen.gatt.connect();if(serial!==epoch){server.disconnect();return}
+  const service=await server.getPrimaryService(0xfff0);const found=await service.getCharacteristics();if(serial!==epoch){server.disconnect();return}
+  for(const c of found){const code=c.uuid.slice(4,8).toLowerCase();chars[code]=c;log(`GATT ${code.toUpperCase()} notify=${c.properties.notify} write=${c.properties.write}`)}
+  if(!chars.fff3||!chars.fff4)throw Error('缺少 FFF3 / FFF4，本工具不支持此桩协议');
+  connected=true;refresh();$('deviceName').textContent=`已选择：${chosen.name||'未命名设备'}（尚未核对桩号）`;
+  for(const code of ['fff4','fff5','fff9']){const c=chars[code];if(!c)continue;if(!c.properties.notify&&!c.properties.indicate){log(`${code} 不支持通知`);continue}
+   c.addEventListener('characteristicvaluechanged',e=>{if(serial===epoch){const v=e.target.value;receive(code,new Uint8Array(v.buffer,v.byteOffset,v.byteLength))}});await c.startNotifications();if(serial!==epoch){server.disconnect();return}
+  }
+  log('通知订阅完成');message('蓝牙已连接，正在自动读取系统信息');
+  try{await request(P.commands.info());if(serial===epoch&&!authFailed&&ready)message('系统信息已获取，可以操作充电桩');}
+  catch(e){if(serial===epoch){ready=false;refresh();fail(Error(`自动读取失败：${e.message}。请点击读取系统信息重试`))}}
+ }catch(e){if(serial===epoch)disconnect();throw e}
+}
+const bind=(id,fn)=>$(id).addEventListener('click',()=>run(fn));
+bind('connect',()=>connect(false));bind('directConnect',()=>connect(true));$('disconnect').onclick=disconnect;
+$('immediate').onclick=()=>{if(connected&&ready&&!busy&&!authFailed)$('immediateSheet').classList.remove('hidden')};
+$('cancelImmediate').onclick=()=>$('immediateSheet').classList.add('hidden');
+bind('confirmImmediate',async()=>{$('immediateSheet').classList.add('hidden');await immediateCharge()});
+bind('read',async()=>{await request(P.commands.info());message('系统信息响应已收到')});
+bind('sync',async()=>{const response=await request(P.commands.sync());log(`B0 校时响应负载 ${P.hex(response.payload)||'<空>'}；原协议未定义结果码`);await request(P.commands.info());message('校时响应已收到，系统信息已刷新；当前协议无法读回桩时钟，尚未确认校时结果')});
+for(const [id,fn] of Object.entries({start:P.commands.start,stop:P.commands.stop,lightOn:()=>P.commands.light(true),lightOff:()=>P.commands.light(false),setVolume:()=>P.commands.volume(Number($('volume').value)),reserve:()=>P.commands.reserve(true,$('begin').value,$('end').value),cancelReserve:()=>P.commands.reserve(false)}))bind(id,()=>control(fn()));
+$('poll').onchange=()=>{clearInterval(pollTimer);pollTimer=null;if($('poll').checked)pollTimer=setInterval(()=>{if(connected&&!busy&&!pending&&!authFailed)run(()=>request(P.commands.info()))},5000)};
+$('clear').onclick=()=>{logs=[];$('log').textContent=''};
+$('export').onclick=()=>{if(window.AndroidBLE){AndroidBLE.exportLog(logs.join('\n'));return;}const url=URL.createObjectURL(new Blob([logs.join('\n')],{type:'text/plain;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='mg-pile-debug.log';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)};
+$('capability').textContent='安卓原生 BLE · 无需电脑 · 切到后台会自动断开';
+window.addEventListener('beforeunload',()=>{if(device?.gatt?.connected)device.gatt.disconnect()});refresh();
+</script>
+<script>/* 网页版附加：环境自检、帧头开关、协议自检 */
+(function(){
+ const $=id=>document.getElementById(id);
+ function env(){
+  const secure=window.isSecureContext;
+  const bt=!!(navigator.bluetooth && navigator.bluetooth.requestDevice);
+  const inShell=!!window.AndroidBLE;
+  const ua=navigator.userAgent;
+  const isIOS=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+  const isSafari=/^((?!chrome|android|crios|fxios).)*safari/i.test(ua);
+  let s='安全上下文 '+ (secure?'✔':'✘（必须是 https 或 localhost）') +' ｜ 蓝牙 API '+ (bt?'✔':'✘');
+  if(!bt){
+   if(isIOS&&isSafari) s+=' ｜ 检测到 iOS Safari：Safari 不支持 Web Bluetooth，请改用 Bluefy 浏览器打开本页';
+   else if(isIOS) s+=' ｜ 检测到 iOS：请确认使用的是 Bluefy 等支持 Web Bluetooth 的浏览器';
+   else s+=' ｜ 请改用 Chrome / Edge；并确认页面是 https';
+  } else s+=' ｜ 环境可用'+(inShell?'（运行在 AndroidBLE 壳内）':'');
+  const el=$('envCheck'); if(el) el.textContent=s;
+ }
+ env();
+ const rx=$('rx68');
+ function apply(){ const on=rx&&rx.checked; PileProtocol.setHeaders(on?[0xAA,0x68]:[0xAA]); }
+ if(rx){ rx.addEventListener('change',()=>{apply();log && log('接收帧头模式：'+(rx.checked?'兼容 0x68/0xAA':'仅 0xAA（原版）'))}); }
+ apply();
+ const forceOn=$('allDevices'); if(forceOn){ /* 保留原逻辑 */ }
+ const st=$('selftest');
+ if(st) st.addEventListener('click',()=>{
+  const P=PileProtocol, V=[];
+  const hex=a=>Array.from(a,b=>b.toString(16).padStart(2,'0')).join(' ').toUpperCase();
+  const cases=[
+   ['info 0xB1', P.commands.info(), '68 B1 00 00 00 00 00 D9'],
+   ['sync(1700000000) 0xB0', P.commands.sync(1700000000), '68 B0 00 00 04 00 00 1B 00 F1 53 65'],
+   ['start 0xB4', P.commands.start(), '68 B4 00 00 02 00 00 DF 01 00'],
+   ['stop 0xB6', P.commands.stop(), '68 B6 00 00 01 00 00 DF 00'],
+   ['volume(30) 0xB2', P.commands.volume(30), '68 B2 00 00 01 00 00 C5 1E'],
+   ['light(true) 0xA0', P.commands.light(true), '68 A0 00 00 07 00 00 CF 01 01 00 00 00 00 00'],
+   ['reserve(true,23:00,07:00)', P.commands.reserve(true,'23:00','07:00'), '68 B3 00 00 05 00 00 CF 01 17 00 07 00'],
+   ['reserve(false)', P.commands.reserve(false), '68 B3 00 00 05 00 00 DE 00 00 00 00 00']
+  ];
+  let bad=0;
+  for(const [n,f,e] of cases){ const g=hex(f); const ok=(g===e); if(!ok)bad++; V.push((ok?'OK  ':'BAD ')+n+' => '+g+(ok?'':'  expected '+e)); }
+  const mk=(h,cmd,pl)=>{const a=new Uint8Array(8+pl.length);a[0]=h;a[1]=cmd;a[4]=pl.length&255;a[5]=pl.length>>8;a.set(pl,8);a[7]=a.reduce((x,y)=>x^y,0);return a};
+  const p1=new P.Parser().push(mk(0xAA,0xB1,[1,2,3]));
+  const p2=new P.Parser().push(mk(0x68,0xB1,[1,2,3]));
+  V.push((p1.frames.length===1?'OK  ':'BAD ')+'解析 0xAA 帧 -> '+p1.frames.length+' 帧');
+  const want68=(P.getHeaders().indexOf(0x68)>=0);
+  V.push(((p2.frames.length===1)===want68?'OK  ':'BAD ')+'解析 0x68 帧 -> '+p2.frames.length+' 帧（当前模式 '+(want68?'兼容':'不兼容')+'）');
+  if((p1.frames.length===1?0:1)+( (p2.frames.length===1)===want68?0:1)) bad+=0;
+  const out=(bad?'自检失败 '+bad+' 项':'自检全部通过');
+  const el=$('selftestOut'); if(el) el.textContent=out;
+  if(typeof log==='function') log('=== 协议自检 ===\n'+V.join('\n')+'\n'+out); else alert(V.join('\n')+'\n'+out);
+ });
+ const c2=$('clearlog2'); if(c2) c2.addEventListener('click',()=>{const b=$('clear'); if(b) b.click();});
+})();
+</script>
+</body></html>
